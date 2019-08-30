@@ -6,6 +6,7 @@ import Card from '../components/Card';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import Icon3 from 'react-native-vector-icons/MaterialIcons';
+import * as Animatable from 'react-native-animatable';
 
 export default class Home extends Component {
  
@@ -128,15 +129,15 @@ export default class Home extends Component {
                 this.state.organizar ?
                 <>
                   <TouchableOpacity style={{ marginLeft: 10 }}>
-                    <Image source={require('../assets/icons/1b.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
+                    <Animatable.Image animation="swing" source={require('../assets/icons/1b.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
                   </TouchableOpacity>
 
                   <TouchableOpacity style={{ marginLeft: 15 }}>
-                    <Image source={require('../assets/icons/2a.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
+                    <Animatable.Image animation="swing" source={require('../assets/icons/2a.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
                   </TouchableOpacity>
 
                   <TouchableOpacity style={{ marginLeft: 15 }}>
-                    <Image source={require('../assets/icons/3a.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
+                    <Animatable.Image animation="swing" source={require('../assets/icons/3a.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
                   </TouchableOpacity>
                 </>
                 : null
