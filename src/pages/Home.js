@@ -118,9 +118,9 @@ export default class Home extends Component {
             </ScrollView>
 
 
-            <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', paddingLeft: 40, marginBottom: 5 }}>
+            <View style={{ width: '100%', height: 25, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', paddingLeft: 40, marginBottom: 3 }}>
 
-              <TouchableOpacity onPress={() => this.setState({ organizar: !this.state.organizar })} style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={() => this.setState({ organizar: !this.state.organizar })} style={{ flexDirection: 'row', alignItems: 'center', height: '100%' }}>
                 <Text style={{ fontFamily: 'Montserrat-Regular', fontSize: 13, color: 'gray' }}>Organizar</Text>
                 <Icon3 name={this.state.organizar ? 'keyboard-arrow-right' : 'keyboard-arrow-down'} size={15} color="gray" />
               </TouchableOpacity>
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   scroll: {
     height: 30,
     marginTop: 40,
-    marginBottom: 10,
+    marginBottom: 7,
     marginLeft: 40,
     flexDirection: 'row'
   },
