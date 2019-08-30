@@ -15,12 +15,16 @@ export default class Home extends Component {
     loading: true,
     username: 'Usuário',
     organizar: false,
-    actived: [true, false, false, false]
+    typeResize: 1,
+    actived: 1,
   }
 
   async componentDidMount(){
+    
     const username = await AsyncStorage.getItem('@Todo:username');
-    this.setState({ username });
+    const typeResize = parseInt(await AsyncStorage.getItem('@Todo:typeResize'));
+    
+    this.setState({ username: username || 'Usuário', typeResize: typeResize || 1 });
 
     this.getTodosUser();
 
@@ -38,7 +42,7 @@ export default class Home extends Component {
 
   async getTodosUser(){
 
-    this.setState({ actived: [true, false, false, false] });
+    this.setState({ actived: 1 });
 
     const id = await AsyncStorage.getItem('@Todo:id_user');
     const { status, data: { todos: listTodos }} = await api.get('todos/'+id);
@@ -50,7 +54,7 @@ export default class Home extends Component {
 
   async getTodosShare(){
 
-    this.setState({ actived: [false, true, false, false] });
+    this.setState({ actived: 2 });
 
     const { status, data: { todos: listTodos }} = await api.get('todos');
     
@@ -77,6 +81,11 @@ export default class Home extends Component {
 
     this.props.navigation.navigate('Loading');
   }
+
+  async setTypeResize(typeResize){
+    this.setState({ typeResize });
+    await AsyncStorage.setItem('@Todo:typeResize', String(typeResize));
+  }
   
   render() {
     return(
@@ -86,34 +95,30 @@ export default class Home extends Component {
 
             <View style={styles.headerButtons}>
               <TouchableOpacity onPress={() => this.logout()}>
-                <Icon2 name="logout" size={24} color="#000" />
+                <Icon2 style={{ transform: [ { rotate: '180deg' }] }} name="logout" size={24} color="#000" />
               </TouchableOpacity>
-              {/* <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 18, marginLeft: 32 }}>Nova Tarefa!</Text> */}
             </View>
-
 
             <View style={styles.header}>
               <Text style={styles.textHeader}>Bem-vindo, {this.state.username}!</Text>
               <Text style={styles.textSubHeader}>Abaixo, suas tarefas do dia-a-dia...</Text>
             </View>
-
             
-
             <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={{ height: 30 }} horizontal style={styles.scroll}>
               <TouchableOpacity onPress={() => this.getTodosUser()}>
-                <Text style={[styles.textScroll, this.state.actived[0] && styles.textScrollActived]}>Suas Tarefas</Text>
+                <Text style={[styles.textScroll, this.state.actived == 1 && styles.textScrollActived]}>Suas Tarefas</Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => this.getTodosShare()}>
-                <Text style={[styles.textScroll, this.state.actived[1] && styles.textScrollActived]}>Tarefas Compartilhadas</Text>
+                <Text style={[styles.textScroll, this.state.actived == 2 && styles.textScrollActived]}>Tarefas Compartilhadas</Text>
               </TouchableOpacity>
 
               <TouchableOpacity>
-                <Text style={[styles.textScroll, this.state.actived[2] && styles.textScrollActived]}>Anotações</Text>
+                <Text style={[styles.textScroll, this.state.actived == 3 && styles.textScrollActived]}>Anotações</Text>
               </TouchableOpacity>
 
               <TouchableOpacity>
-                <Text style={[styles.textScroll, this.state.actived[3] && styles.textScrollActived]}>Anotações</Text>
+                <Text style={[styles.textScroll, this.state.actived == 4 && styles.textScrollActived]}>Anotações</Text>
               </TouchableOpacity>
             </ScrollView>
 
@@ -128,16 +133,31 @@ export default class Home extends Component {
               {
                 this.state.organizar ?
                 <>
-                  <TouchableOpacity style={{ marginLeft: 10 }}>
-                    <Animatable.Image animation="swing" source={require('../assets/icons/1b.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
+                  <TouchableOpacity onPress={() => this.setTypeResize(1)} style={{ marginLeft: 10 }}>
+                    <Animatable.Image
+                      animation="swing"
+                      source={this.state.typeResize == 1 ? require('../assets/icons/1b.png') : require('../assets/icons/1a.png')}
+                      resizeMode="contain"
+                      style={{ height: 25, width: 25 }}
+                    />
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={{ marginLeft: 15 }}>
-                    <Animatable.Image animation="swing" source={require('../assets/icons/2a.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
+                  <TouchableOpacity onPress={() => this.setTypeResize(2)} style={{ marginLeft: 15 }}>
+                    <Animatable.Image
+                      animation="swing"
+                      source={this.state.typeResize == 2 ? require('../assets/icons/2b.png') : require('../assets/icons/2a.png')}
+                      resizeMode="contain"
+                      style={{ height: 25, width: 25 }}
+                    />
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={{ marginLeft: 15 }}>
-                    <Animatable.Image animation="swing" source={require('../assets/icons/3a.png')} resizeMode="contain" style={{ height: 25, width: 25 }} />
+                  <TouchableOpacity onPress={() => this.setTypeResize(3)} style={{ marginLeft: 15 }}>
+                    <Animatable.Image
+                      animation="swing"
+                      source={this.state.typeResize == 3 ? require('../assets/icons/3b.png') : require('../assets/icons/3a.png')}
+                      resizeMode="contain"
+                      style={{ height: 25, width: 25 }}
+                    />
                   </TouchableOpacity>
                 </>
                 : null
@@ -147,7 +167,13 @@ export default class Home extends Component {
             <ScrollView style={{ height: '100%' }} contentContainerStyle={styles.containerCards}>
               {
                 this.state.listTodos.map(todo => 
-                  <Card key={todo._id} todo={todo} removeTodo={this.removeTodo.bind(this)} toggleTodo={this.toggleTodo.bind(this)} />
+                  <Card
+                    key={todo._id}
+                    todo={todo}
+                    removeTodo={this.removeTodo.bind(this)}
+                    toggleTodo={this.toggleTodo.bind(this)}
+                    typeResize={this.state.typeResize}
+                  />
                 )
               }
             </ScrollView>
