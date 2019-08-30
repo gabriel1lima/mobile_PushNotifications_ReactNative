@@ -10,16 +10,38 @@ export default class Card extends Component {
     return moment(new Date(d)).format('DD/MM HH:mm')+" hrs"
   }
 
+  renderResizeMode(type){
+    switch (type) {
+      case 1:
+        return { width: '47%', height: 125 };
+      case 2:
+        return { width: '47%', height: 190 };
+      case 3:
+        return { width: '100%', height: 125 };
+    }
+  }
+
   render() {
-    const { todo, removeTodo, toggleTodo } = this.props;
+    const { todo, removeTodo, toggleTodo, typeResize } = this.props;
     return (
-      <TouchableHighlight underlayColor="#dedede" key={todo._id} onLongPress={() => removeTodo(todo)} onPress={() => toggleTodo(todo)} style={[styles.card, todo.done ? styles.borderCard : null ]}>
+      <TouchableHighlight
+        key={todo._id}
+        underlayColor="#dedede"
+        onLongPress={() => removeTodo(todo)}
+        onPress={() => toggleTodo(todo)}
+        style={[styles.card, todo.done ? styles.borderCard : null, this.renderResizeMode(typeResize) ]}
+      >
         <>
           <Label color={todo.colorLabel} />
 
           <Text style={{ fontSize: 12, color: 'gray', marginTop: 13, fontFamily: 'Montserrat-Regular' }}>{this.renderTime(todo.createdAt)}</Text>
 
-          <Text numberOfLines={3} style={{ color: '#000', marginTop: 4, fontFamily: 'Montserrat-Regular' }}>{todo.title}</Text>
+          <Text
+            numberOfLines={this.renderResizeMode(typeResize).height == 190 ? 7 : 3}
+            style={{ color: '#000', marginTop: 4, fontFamily: 'Montserrat-Regular' }}
+          >
+            {todo.title}
+          </Text>
           
           <View style={{ position: 'absolute', bottom: 0, flex: 1, marginBottom: 13, marginLeft: 20, alignItems: 'center', flexDirection: 'row', }}>
             { todo.done ?
@@ -42,6 +64,7 @@ const styles = StyleSheet.create({
     opacity: 0.25,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'gray',
+    elevation: 0,
   },
   card: {
     width: '47%',
