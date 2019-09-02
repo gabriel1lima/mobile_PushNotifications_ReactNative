@@ -12,14 +12,28 @@ export default class Login extends Component {
 	};
 
 	navigateToHome = () => {
-		const resetAction = StackActions.reset({
+    // Navegar resetando a Stack (sem voltar)
+    /*
+    const resetAction = StackActions.reset({
 			index: 0,
 			actions: [
-				NavigationActions.navigate({routeName: 'Home'})
+				NavigationActions.navigate({routeName: 'isLogged', action: NavigationActions.navigate({ routeName: 'isLogged-Home' })})
 			]
-		});
+    });
+    this.props.navigation.dispatch(resetAction);
+    */
+    
+    // Navegar para uma rota específica de outra Stack
+    /*
+    this.props.navigation.navigate(NavigationActions.navigate({
+      routeName: 'isLogged',
+      action: NavigationActions.navigate({ routeName: 'isLogged-Home' })
+    }))
+    */
 
-		this.props.navigation.dispatch(resetAction);
+    // Navega para outra Stack
+    this.props.navigation.navigate('isLogged');
+
 	}
 
 	handleLogin = async () => {

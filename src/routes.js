@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import New from './pages/New';
 
-const App = createStackNavigator({ Login, Home, New }, { headerMode: 'none' });
+const App = createStackNavigator({ Login }, { headerMode: 'none' });
 const isLogged = createStackNavigator({ Home, New }, { headerMode: 'none' });
 
 export default createAppContainer(createSwitchNavigator(

@@ -45,11 +45,17 @@ export default class Home extends Component {
     this.setState({ actived: 1 });
 
     const id = await AsyncStorage.getItem('@Todo:id_user');
-    const { status, data: { todos: listTodos }} = await api.get('todos/'+id);
-    
-    if (status) {
-      this.setState({ listTodos, loading: false });
+    try {
+      const { status, data: { todos: listTodos }} = await api.get('todos/'+id);
+      
+      if (status === 200) {
+        this.setState({ listTodos, loading: false });
+      }
+    } catch (error) {
+      if (error.response.status === 401)
+        this.props.navigation.navigate('App');
     }
+    
   }
 
   async getTodosShare(){
