@@ -51,10 +51,7 @@ export default class Home extends Component {
       if (status === 200) {
         this.setState({ listTodos, loading: false });
       }
-    } catch (error) {
-      if (error.response.status === 401)
-        this.props.navigation.navigate('App');
-    }
+    } catch (error) { }
     
   }
 
@@ -83,7 +80,7 @@ export default class Home extends Component {
   }
 
   async logout() {
-    await AsyncStorage.multiRemove(['@Todo:username', '@Todo:id_user', '@Todo:token']);
+    await AsyncStorage.multiRemove(['@Todo:username', '@Todo:id_user', '@Todo:token', '@Todo:refreshToken']);
 
     this.props.navigation.navigate('Loading');
   }

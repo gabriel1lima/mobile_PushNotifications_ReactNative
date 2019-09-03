@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Routes from './routes';
-
+import NavigationService from "../src/services/NavigationService";
 import { AsyncStorage, YellowBox, StatusBar } from 'react-native';
 import firebase from 'react-native-firebase';
 
@@ -91,7 +91,9 @@ export default class App extends Component {
     return (
       <>
         <StatusBar backgroundColor="#cccccc" barStyle="dark-content" />
-        <Routes />
+        <Routes  ref={navigatorRef => {
+          NavigationService.setTopLevelNavigator(navigatorRef);
+        }} />
       </>
     )
   }

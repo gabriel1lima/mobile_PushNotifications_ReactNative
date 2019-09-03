@@ -7,8 +7,8 @@ import api from '../services/api';
 export default class Login extends Component {
 
 	state = {
-    username: "",
-    password: "",
+    username: "gabriel",
+    password: "123456",
 	};
 
 	navigateToHome = () => {
@@ -43,10 +43,10 @@ export default class Login extends Component {
 
     let fcmtoken = await AsyncStorage.getItem('fcmToken');
 
-    const { status, data: { user, token } } = await api.post('auth/login', { username, password, fcmtoken });
+    const { status, data: { user, token, refreshToken } } = await api.post('auth/login', { username, password, fcmtoken });
 
-    if (status){
-      await AsyncStorage.multiSet([['@Todo:username', user.name], ['@Todo:id_user', user._id], ['@Todo:token', token]]);
+    if (status == 200){
+      await AsyncStorage.multiSet([['@Todo:username', user.username], ['@Todo:id_user', user._id], ['@Todo:token', token], ['@Todo:refreshToken', refreshToken]]);
       this.navigateToHome();
     }
 
