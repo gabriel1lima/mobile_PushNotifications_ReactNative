@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image, AsyncStorage } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Image, AsyncStorage, Animated } from 'react-native';
 import LottieView from 'lottie-react-native';
 import api from '../services/api';
 import Card from '../components/Card';
@@ -17,7 +17,8 @@ export default class Home extends Component {
     organizar: false,
     typeResize: 1,
     actived: 1,
-    visibleFab: true
+    visibleFab: true,
+    scrollAnim: new Animated.Value(0),
   }
 
   async componentDidMount(){
@@ -97,6 +98,15 @@ export default class Home extends Component {
   // };
   
   render() {
+
+    const { scrollAnim } = this.state;
+
+    const navbarOpacity = scrollAnim.interpolate({
+      inputRange: [0, 150],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
+
     return(
       <>{
         !this.state.loading ?
@@ -176,13 +186,9 @@ export default class Home extends Component {
             <ScrollView
               style={{ height: '100%' }}
               contentContainerStyle={styles.containerCards}
-              // onScroll={({ nativeEvent }) => {
-              //   if (this.isCloseToBottom(nativeEvent)) {
-              //     this.setState({ visibleFab: false });
-              //   } else {
-              //     this.setState({ visibleFab: true });
-              //   }
-              // }}
+              onScroll={Animated.event([
+                { nativeEvent: { contentOffset: { y: this.state.scrollAnim } } },
+              ])}
               // scrollEventThrottle={400}
             >
               {
@@ -198,13 +204,14 @@ export default class Home extends Component {
               }
             </ScrollView>
 
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('New')}
-              activeOpacity={0.7}
-              style={styles.fab}
-            >
-              <Icon name="plus" size={20} color="#FFF" />
-            </TouchableOpacity>
+            <Animated.View style={[styles.fab, { opacity: navbarOpacity }]}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('New')}
+                activeOpacity={0.7}
+              >
+                <Icon name="plus" size={20} color="#FFF" />
+              </TouchableOpacity>
+            </Animated.View>
 
           </View>
           :
