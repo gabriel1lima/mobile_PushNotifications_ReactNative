@@ -17,6 +17,7 @@ export default class Home extends Component {
     organizar: false,
     typeResize: 1,
     actived: 1,
+    visibleFab: true
   }
 
   async componentDidMount(){
@@ -89,6 +90,11 @@ export default class Home extends Component {
     this.setState({ typeResize });
     await AsyncStorage.setItem('@Todo:typeResize', String(typeResize));
   }
+
+  // isCloseToBottom ({layoutMeasurement, contentOffset, contentSize}) {
+  //   const paddingToBottom = 30;
+  //   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+  // };
   
   render() {
     return(
@@ -167,7 +173,18 @@ export default class Home extends Component {
               }
             </View>
 
-            <ScrollView style={{ height: '100%' }} contentContainerStyle={styles.containerCards}>
+            <ScrollView
+              style={{ height: '100%' }}
+              contentContainerStyle={styles.containerCards}
+              // onScroll={({ nativeEvent }) => {
+              //   if (this.isCloseToBottom(nativeEvent)) {
+              //     this.setState({ visibleFab: false });
+              //   } else {
+              //     this.setState({ visibleFab: true });
+              //   }
+              // }}
+              // scrollEventThrottle={400}
+            >
               {
                 this.state.listTodos.map(todo => 
                   <Card
@@ -181,7 +198,11 @@ export default class Home extends Component {
               }
             </ScrollView>
 
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('New')} activeOpacity={0.7} style={{ position: 'absolute', elevation: 12, bottom: 16, right: 16, alignSelf: 'flex-end', width: 56, height: 56, borderRadius: 28, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('New')}
+              activeOpacity={0.7}
+              style={styles.fab}
+            >
               <Icon name="plus" size={20} color="#FFF" />
             </TouchableOpacity>
 
@@ -246,5 +267,18 @@ const styles = StyleSheet.create({
   textScrollActived: {
     fontFamily: 'Montserrat-Bold',
     color: '#000'
+  },
+  fab: {
+    position: 'absolute',
+    elevation: 12,
+    bottom: 16,
+    right: 16,
+    alignSelf: 'flex-end',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 });
