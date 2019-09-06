@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 const api = axios.create({
-  baseURL: 'http://192.168.111.38:3000'
+  baseURL: 'http://192.168.111.121:3000'
 });
 
 async function goToLogin() {

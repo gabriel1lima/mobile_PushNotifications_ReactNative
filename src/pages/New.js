@@ -17,6 +17,9 @@ export default class New extends Component {
   
   async createTodo() {
     const { title, colorLabel } = this.state;
+
+    if(!title.length) return;
+
 		const id_user = await AsyncStorage.getItem('@Todo:id_user')
 
 		const res = await api.post('todos', {title, id_user, colorLabel});

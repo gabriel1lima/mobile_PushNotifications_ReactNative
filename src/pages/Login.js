@@ -9,6 +9,7 @@ export default class Login extends Component {
 	state = {
     username: "gabriel",
     password: "123456",
+    erro: "Nenhum erro"
 	};
 
 	navigateToHome = () => {
@@ -43,12 +44,20 @@ export default class Login extends Component {
 
     let fcmtoken = await AsyncStorage.getItem('fcmToken');
 
-    const { status, data: { user, token, refreshToken } } = await api.post('auth/login', { username, password, fcmtoken });
+    try {
+      const { status, data: { user, token, refreshToken } } = await api.post('auth/login', { username, password, fcmtoken });
+      
+      if (status == 200){
+        await AsyncStorage.multiSet([['@Todo:username', user.username], ['@Todo:id_user', user._id], ['@Todo:token', token], ['@Todo:refreshToken', refreshToken]]);
+        this.navigateToHome();
+      }
 
-    if (status == 200){
-      await AsyncStorage.multiSet([['@Todo:username', user.username], ['@Todo:id_user', user._id], ['@Todo:token', token], ['@Todo:refreshToken', refreshToken]]);
-      this.navigateToHome();
+    } catch (error) {
+      // console.tron.log(error)
+      this.setState({ erro: error.message })
     }
+
+
 
 	}
 
@@ -74,6 +83,8 @@ export default class Login extends Component {
 						returnKeyType="send"
 						onSubmitEditing={this.handleLogin}
 					/>
+
+          <Text>{ this.state.erro }</Text>
 
 					<TouchableOpacity style={styles.button} onPress={this.handleLogin}>
 						<Text style={styles.buttonText}>Entrar</Text>
