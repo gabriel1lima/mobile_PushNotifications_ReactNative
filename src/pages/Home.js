@@ -102,11 +102,12 @@ export default class Home extends Component {
     
     let { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
 
-    this.setState({ heightScroll: contentSize.height - layoutMeasurement.height - 100 });
+    let tmp_heightScroll = contentSize.height - layoutMeasurement.height
+    this.setState({ heightScroll: tmp_heightScroll > 100 ? tmp_heightScroll - 100 : tmp_heightScroll });
     
     this.scrollAnim.setValue(contentOffset.y - 100);
     
-    if (layoutMeasurement.height + contentOffset.y >= contentSize.height) {
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 1) {
       this.setState({ visibleFab: false });
     } else {
       this.setState({ visibleFab: true });
