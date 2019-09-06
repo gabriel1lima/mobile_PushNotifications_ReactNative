@@ -5,8 +5,14 @@ import {
 } from 'react-native';
 
 const api = axios.create({
-  baseURL: 'http://192.168.111.21:3000'
+  baseURL: 'http://192.168.111.38:3000'
 });
+
+async function goToLogin() {
+  await AsyncStorage.multiRemove(['@Todo:username', '@Todo:id_user', '@Todo:token', '@Todo:refreshToken']);
+
+  NavigationService.navigate("Loading");
+}
 
 api.interceptors.response.use(
   (response) => {
@@ -15,22 +21,18 @@ api.interceptors.response.use(
   },
   async (error) => {
 
+    const { config: originalRequest, response: { status, data: {error: msg} } } = error;
+
     // Se não for erro referente a expiração de token, apenas retorna o erro.
-    if (error.response.status !== 498) {
+    if (status !== 498) {
       return new Promise((resolve, reject) => {
         reject(error);
       });
-    }
+    } 
 
-    const { config: originalRequest, response: { data: {error: msg} } } = error;
-
-    if (originalRequest.url.endsWith('token') && msg == 'Token de atualização inválido') {
-      
-      console.tron.log(msg);
-        
-      await AsyncStorage.multiRemove(['@Todo:username', '@Todo:id_user', '@Todo:token', '@Todo:refreshToken']);
-
-      NavigationService.navigate("Loading");
+    if (originalRequest.url.endsWith('token') && (msg == 'Token de atualização inválido' || msg == 'Erro no Token de atualização fornecido')) {
+       
+      goToLogin();
 
       return new Promise((resolve, reject) => {
         reject(error);

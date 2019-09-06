@@ -18,7 +18,14 @@ export default class Home extends Component {
     typeResize: 1,
     actived: 1,
     visibleFab: true,
-    scrollAnim: new Animated.Value(0),
+    heightScroll: 0,
+    // scrollAnim: new Animated.Value(0),
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.scrollAnim = new Animated.Value(0);
   }
 
   async componentDidMount(){
@@ -92,21 +99,22 @@ export default class Home extends Component {
     await AsyncStorage.setItem('@Todo:typeResize', String(typeResize));
   }
 
-  // isCloseToBottom ({layoutMeasurement, contentOffset, contentSize}) {
-  //   const paddingToBottom = 30;
-  //   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-  // };
+  isCloseToBottom (nativeEvent) {
+    
+    let { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+
+    console.tron.log(nativeEvent);
+
+    this.setState({ heightScroll: contentSize.height });
+    
+    this.scrollAnim.setValue(layoutMeasurement.height + contentOffset.y + 20);
+
+    
+    // const paddingToBottom = 30;
+    // return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+  };
   
   render() {
-
-    const { scrollAnim } = this.state;
-
-    const navbarOpacity = scrollAnim.interpolate({
-      inputRange: [0, 150],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-
     return(
       <>{
         !this.state.loading ?
@@ -186,9 +194,18 @@ export default class Home extends Component {
             <ScrollView
               style={{ height: '100%' }}
               contentContainerStyle={styles.containerCards}
-              onScroll={Animated.event([
-                { nativeEvent: { contentOffset: { y: this.state.scrollAnim } } },
-              ])}
+              onScroll={({ nativeEvent }) => {
+                // if (
+                  this.isCloseToBottom(nativeEvent)
+                //   ) {
+                //   this.setState({ visibleFab: false });
+                // } else {
+                //   this.setState({ visibleFab: true });
+                // }
+              }}
+              // onScroll={Animated.event([
+              //   { nativeEvent: { contentOffset: { y: this.state.scrollAnim } } },
+              // ])}
               // scrollEventThrottle={400}
             >
               {
@@ -204,7 +221,20 @@ export default class Home extends Component {
               }
             </ScrollView>
 
-            <Animated.View style={[styles.fab, { opacity: navbarOpacity }]}>
+            <Animated.View
+              style={
+                [
+                  styles.fab, 
+                  { 
+                    opacity: this.scrollAnim.interpolate({
+                      inputRange: [0, this.state.heightScroll],
+                      outputRange: [1, 0],
+                      extrapolate: 'clamp',
+                    }) 
+                  }
+                ]
+              }
+            >
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('New')}
                 activeOpacity={0.7}
