@@ -25,6 +25,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
 
+    this
     this.scrollAnim = new Animated.Value(0);
   }
 
@@ -99,19 +100,14 @@ export default class Home extends Component {
     await AsyncStorage.setItem('@Todo:typeResize', String(typeResize));
   }
 
-  isCloseToBottom (nativeEvent) {
+  handlerOnScroll(nativeEvent) {
     
     let { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
 
-    console.tron.log(nativeEvent);
-
-    this.setState({ heightScroll: contentSize.height });
+    this.setState({ heightScroll: contentSize.height - layoutMeasurement.height - 100 });
     
-    this.scrollAnim.setValue(layoutMeasurement.height + contentOffset.y + 20);
+    this.scrollAnim.setValue(contentOffset.y - 100);
 
-    
-    // const paddingToBottom = 30;
-    // return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
   };
   
   render() {
@@ -194,19 +190,7 @@ export default class Home extends Component {
             <ScrollView
               style={{ height: '100%' }}
               contentContainerStyle={styles.containerCards}
-              onScroll={({ nativeEvent }) => {
-                // if (
-                  this.isCloseToBottom(nativeEvent)
-                //   ) {
-                //   this.setState({ visibleFab: false });
-                // } else {
-                //   this.setState({ visibleFab: true });
-                // }
-              }}
-              // onScroll={Animated.event([
-              //   { nativeEvent: { contentOffset: { y: this.state.scrollAnim } } },
-              // ])}
-              // scrollEventThrottle={400}
+              onScroll={({ nativeEvent }) => this.handlerOnScroll(nativeEvent) }
             >
               {
                 this.state.listTodos.map(todo => 
