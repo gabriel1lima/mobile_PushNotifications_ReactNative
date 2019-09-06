@@ -19,13 +19,11 @@ export default class Home extends Component {
     actived: 1,
     visibleFab: true,
     heightScroll: 0,
-    // scrollAnim: new Animated.Value(0),
   }
 
   constructor(props) {
     super(props);
 
-    this
     this.scrollAnim = new Animated.Value(0);
   }
 
@@ -107,6 +105,12 @@ export default class Home extends Component {
     this.setState({ heightScroll: contentSize.height - layoutMeasurement.height - 100 });
     
     this.scrollAnim.setValue(contentOffset.y - 100);
+    
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height) {
+      this.setState({ visibleFab: false });
+    } else {
+      this.setState({ visibleFab: true });
+    }
 
   };
   
@@ -205,27 +209,34 @@ export default class Home extends Component {
               }
             </ScrollView>
 
-            <Animated.View
-              style={
-                [
-                  styles.fab, 
-                  { 
-                    opacity: this.scrollAnim.interpolate({
-                      inputRange: [0, this.state.heightScroll],
-                      outputRange: [1, 0],
-                      extrapolate: 'clamp',
-                    }) 
+            {
+              this.state.visibleFab
+              ?
+                <Animated.View
+                  style={
+                    [
+                      styles.fab, 
+                      { 
+                        opacity: this.scrollAnim.interpolate({
+                          inputRange: [0, this.state.heightScroll],
+                          outputRange: [1, 0],
+                          extrapolate: 'clamp',
+                        }) 
+                      }
+                    ]
                   }
-                ]
-              }
-            >
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('New')}
-                activeOpacity={0.7}
-              >
-                <Icon name="plus" size={20} color="#FFF" />
-              </TouchableOpacity>
-            </Animated.View>
+                >
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('New')}
+                    activeOpacity={0.7}
+                  >
+                    <Icon name="plus" size={20} color="#FFF" />
+                  </TouchableOpacity>
+                </Animated.View>
+              :
+                null
+            }
+            
 
           </View>
           :
