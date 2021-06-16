@@ -9,6 +9,7 @@
     "postversion": "react-native-version"
   },
   "dependencies": {
+    "@notifee/react-native": "^1.6.0",
     "axios": "^0.19.0",
     "lottie-react-native": "^3.1.0",
     "moment": "^2.24.0",
